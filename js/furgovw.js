@@ -131,15 +131,17 @@ var furgovw = {};
 
     function popErrorMessage(errorMessage) {
 
-        $("<div class='ui-loader ui-overlay-shadow ui-body-e ui-corner-all'><h1>" + errorMessage + "</h1></div>")
+        $("<div class='ui-loader ui-overlay-shadow ui-body-e ui-corner-all error-message'><h1>" + errorMessage + "</h1></div>")
             .css({
             "display": "block",
             "opacity": 0.96,
+            "left":"5%",
+            "width":"90%",
             "top": $(window)
                 .scrollTop() + 100
         })
             .appendTo($.mobile.pageContainer)
-            .delay(2000)
+            .delay(4000)
             .fadeOut(400, function() {
             $(this)
                 .remove();
