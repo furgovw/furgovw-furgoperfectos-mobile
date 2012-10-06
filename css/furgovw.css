@@ -1,0 +1,84 @@
+
+/* FURGOVW CUSTOM */
+
+.ui-header {
+    height: 40px;
+}
+
+#fvw_logo {
+    display: block;
+    margin: 0 auto;
+    max-width: 200px;
+    max-height: 200px;
+}
+
+#fvw_exit_button {
+    display: block;
+    width: 100px;
+    margin: 0 auto;
+}
+
+#fvw_user_location_button {
+    display: block;
+    width: 250px;
+    margin: 15px auto;
+}
+
+#fvw_user_location {
+    width: 220px;
+    margin: 10px auto;
+    padding: 10px;
+    text-align: center;
+}
+
+img#fvw_spot_picture {
+    max-height: 150px;
+    max-width:  250px;
+    display: block;
+    margin: 0 auto;
+}
+
+#fvw_spot_name {
+    font-size: 120%;
+    display: block;
+    margin: 0 auto;
+    text-align: center;
+    padding: 6px;
+}
+
+#fvw_spot_distance {
+    font-size: 90%;
+    display: block;
+    margin: 0 auto;
+    text-align: center;
+    padding: 6px 6px 10px 6px;
+}
+
+p#fvw_spot_author {
+    display: block;
+    margin: 0 auto;
+    text-align: center;
+}
+
+p#fvw_spot_msg_body {
+    display: block;
+    margin: 8px auto;
+    padding: 4px;
+    text-align: left;
+    border-radius: 4px;
+    background-color: #fff;
+    overflow: hidden;
+}
+
+p#fvw_spot_msg_body img {
+    max-width: 280px;
+    max-height: 280px;
+    display: block;
+    clear: both;
+    margin: 0 auto;
+}
+
+/*.spots_list_picture {
+    max-width: 60px;
+    max-height: 60px;
+}*/
