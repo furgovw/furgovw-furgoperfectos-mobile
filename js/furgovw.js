@@ -1,3 +1,8 @@
+/**
+ * Club Camper Furgovw's Mobile App
+ * Copyright (C) 2012, Club Camper Furgovw (furgovw.org)
+ * Created by Javier Montes (@mooontes - http://mooontes.com)
+ */
 var furgovw = {};
 
 (function($) {
@@ -28,6 +33,7 @@ var furgovw = {};
         furgovw.geocoder = new google.maps.Geocoder();
 
         //Get user location
+        console.log('Starting to get location...')
         navigator.geolocation.getCurrentPosition(
 
             // onSuccess
@@ -79,6 +85,7 @@ var furgovw = {};
             contentType: "application/json; charset=utf-8"
         });
         $.getJSON('http://www.furgovw.org/api.php?latitude=' + furgovw.userLatitude + '&longitude=' + furgovw.userLongitude,
+        //$.getJSON('http://192.168.1.41/test_phonegap/www/js/api.json',
 
         function(spots) {
             console.log('furgovw: Loaded data from api');
@@ -87,7 +94,7 @@ var furgovw = {};
             $.each(spots, function(index, spot) {
                 $('#spots_list_list')
                     .append('<li><a onclick="furgovw.fillDetailPage(' + spot.id + ');" href="#spot-detail' + '">' + '<h3>' + spot.nombre + '</h3>' + '<p>' + parseFloat(spot.distance)
-                    .toFixed(1) + ' kms</p>' + '<img class="spots_list_picture" src="' + spot.imagen + '"></a></li>');
+                    .toFixed(1) + ' kms</p>' + '<img class="spots_list_picture" src="http://www.furgovw.org/tt.php?src=' + encodeURIComponent(spot.imagen) + '&w=80&h=80"></a></li>');
             });
 
             $('#spots_list_list')
