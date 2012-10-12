@@ -1,0 +1,80 @@
+/**
+ * Club Camper Furgovw's Mobile App
+ * Copyright (C) 2012, Club Camper Furgovw (furgovw.org)
+ * Created by Javier Montes (@mooontes - http://mooontes.com)
+ */
+
+img {
+    max-width: 100%;
+}
+
+#home {
+    #fvw_logo {
+        display: block;
+        margin: 0 auto;
+    }
+    #buttons {
+        width: 265px;
+        margin: 0 auto;
+
+        #fvw_user_location_button {
+            width: 210px;
+            float: left;
+
+            .ui-btn-inner {
+                padding-left: 28px;
+            }
+        }
+        #fvw_select_location_button {
+            float: left;
+            margin-left: 5px;
+            padding: 7px;
+        }
+    }
+}
+
+#map {
+    width: 100%;
+    height: 100%;
+}
+#map_content {
+    padding: 0;
+    width: 100%;
+    height: 100%;
+}
+
+@media all and (max-width: 319px) {
+    #home {
+        #buttons {
+            width: 225px;
+
+            #fvw_user_location_button {
+                width: 170px;
+            }
+        }
+    }
+}
+
+@media all and (min-width: 320px) and (max-width: 480px) {
+    #home {
+        #buttons {
+            width: 305px;
+
+            #fvw_user_location_button {
+                width: 250px;
+            }
+        }
+    }
+}
+
+@media all and (min-width: 481px) {
+    #home {
+        #buttons {
+            width: 466px;
+
+            #fvw_user_location_button {
+                width: 411px;
+            }
+        }
+    }
+}

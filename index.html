@@ -21,11 +21,20 @@ Created by Javier Montes (@mooontes - http://mooontes.com)
 
             <div data-role="content">
                 <img id="fvw_logo" src="img/logo_furgovw.png">
-                <a id="fvw_user_location_button" data-role="button" href="#">Cargando ubicación...</a>
-                <a id="fvw_exit_button" onclick="navigator.device.exitApp();" href="#" data-role="button" data-icon="delete">Salir</a>
+                <div id="buttons">
+                    <a id="fvw_user_location_button" data-role="button" data-icon="grid" data-iconpos="left" href="#">Cargando ubicación...</a>
+                    <a id="fvw_select_location_button" href="#map" data-role="button" data-icon="search" data-iconpos="notext"></a>
+                </div>
+            </div>
+        </div>
+
+        <div id="map" data-role="page" data-add-back-btn="true">
+            <div data-role="header" data-position="fixed">
+                <h1>furgovw.org</h1>
             </div>
 
-            <div data-role="footer">
+            <div id="map_content" data-role="content">
+                <div id="map_container"></div>
             </div>
         </div>
 
@@ -56,9 +65,10 @@ Created by Javier Montes (@mooontes - http://mooontes.com)
         </div>
         <script type="text/javascript" src="cordova-2.1.0.js"></script>
         <script type="text/javascript" src="js/jquery-1.8.2.min.js"></script>
+        <script type="text/javascript" src="js/jquery.jsonp.js"></script>
         <script type="text/javascript" src="js/jquery.mobile-1.2.0.min.js"></script>
         <script type="text/javascript" src="http://www.google.com/jsapi"></script>
-        <script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=true"></script>
+        <script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
         <script type="text/javascript" src="js/furgovw.js"></script>
         <script type="text/javascript" src="js/index.js"></script>
         <script type="text/javascript">

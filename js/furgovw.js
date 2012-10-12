@@ -4,6 +4,7 @@
  * Created by Javier Montes (@mooontes - http://mooontes.com)
  */
 var furgovw = {};
+var map;
 
 (function($) {
 
@@ -16,8 +17,36 @@ var furgovw = {};
             furgovw.main();
         });
 
-        furgovw.main();
+        $('#map').on('pageshow', function() {
+            furgovw.loadMap();
+        });
 
+        $('#map').on('pagebeforehide', function() {
+            furgovw.userLatitude  = furgovw.marker.position.lat();
+            furgovw.userLongitude = furgovw.marker.position.lng();
+
+            furgovw.loadSpots();
+
+            $('a#fvw_user_location_button')
+                .attr('href', '#spots-list');
+
+            furgovw.geocoder.geocode({
+                'latLng': furgovw.marker.position
+            }, function(results, status) {
+                if (status == google.maps.GeocoderStatus.OK) {
+                    if (results[1]) {
+                        var reverse_geo = results[1];
+                        $('#fvw_user_location_button .ui-btn-text')
+                            .html(
+                        reverse_geo.address_components[0].long_name + ', ' + reverse_geo.address_components[1].long_name);
+                    }
+                }
+            });
+        });
+
+        furgovw.geocoder = new google.maps.Geocoder();
+
+        furgovw.main();
     };
 
     furgovw.main = function() {
@@ -30,22 +59,21 @@ var furgovw = {};
             return;
         }
 
-        furgovw.geocoder = new google.maps.Geocoder();
-
         //Get user location
-        console.log('Starting to get location...')
+        console.log('Starting to get location...');
         navigator.geolocation.getCurrentPosition(
 
             // onSuccess
             function(p) {
 
-                console.log('located at: '+p.coords.latitude+','+p.coords.longitude);
+                console.log('located at: ' + p.coords.latitude + ',' + p.coords.longitude);
 
-                furgovw.userLatitude = p.coords.latitude;
+                furgovw.userLatitude  = p.coords.latitude;
                 furgovw.userLongitude = p.coords.longitude;
+
                 furgovw.latLng = new google.maps.LatLng(
-                p.coords.latitude,
-                p.coords.longitude);
+                    p.coords.latitude,
+                    p.coords.longitude);
 
                 if (furgovw.geocoder) {
                     furgovw.geocoder.geocode({
@@ -54,22 +82,29 @@ var furgovw = {};
                         if (status == google.maps.GeocoderStatus.OK) {
                             if (results[1]) {
                                 var reverse_geo = results[1];
-                                $('#fvw_user_location_button span span')
+                                $('#fvw_user_location_button .ui-btn-text')
                                     .html(
-                                reverse_geo.address_components[0].long_name + ', ' + reverse_geo.address_components[1].long_name + '<br>-Ver furgoperfectos-');
+                                reverse_geo.address_components[0].long_name + ', ' + reverse_geo.address_components[1].long_name);
                             }
                         }
                     });
                 }
 
-                // onError
                 furgovw.loadSpots();
                 $('a#fvw_user_location_button')
                     .attr('href', '#spots-list');
             },
 
+            // onError
             function() {
                 popErrorMessage('Lo siento, no consigo encontrar tu localización');
+            },
+
+            // Options
+            {
+                maximumAge: 999999,
+                timeout: 5000,
+                enableHighAccuracy: false
             });
     };
 
@@ -78,34 +113,39 @@ var furgovw = {};
         $('#spots_list_list')
             .empty();
 
-        console.log('furgovw: Loading data from api http://www.furgovw.org/api.php?latitude=' + furgovw.userLatitude + '&longitude=' + furgovw.userLongitude);
-
         $.ajaxSetup({
             scriptCharset: "utf-8",
             contentType: "application/json; charset=utf-8"
         });
-        $.getJSON('http://www.furgovw.org/api.php?latitude=' + furgovw.userLatitude + '&longitude=' + furgovw.userLongitude,
-        //$.getJSON('http://192.168.1.41/test_phonegap/www/js/api.json',
 
-        function(spots) {
-            console.log('furgovw: Loaded data from api');
-            furgovw.spots = spots;
+        mapApiUrl =
+            'http://www.furgovw.org/api.php' +
+            '?latitude=' + encodeURIComponent(furgovw.userLatitude) +
+            '&longitude=' + encodeURIComponent(furgovw.userLongitude);
 
-            $.each(spots, function(index, spot) {
+        $.jsonp({
+            url: mapApiUrl,
+            callbackParameter: 'callback',
+            success: function(spots) {
+                console.log('furgovw: Loaded data from api');
+                furgovw.spots = spots;
+
+                $.each(spots, function(index, spot) {
+                    $('#spots_list_list')
+                        .append('<li><a onclick="furgovw.fillDetailPage(' + spot.id + ');" href="#spot-detail' + '">' + '<h3>' + spot.nombre + '</h3>' + '<p>' + parseFloat(spot.distance)
+                        .toFixed(1) + ' kms</p>' + '<img class="spots_list_picture" src="http://www.furgovw.org/tt.php?src=' + encodeURIComponent(spot.imagen) + '&w=80&h=80"></a></li>');
+                });
+
                 $('#spots_list_list')
-                    .append('<li><a onclick="furgovw.fillDetailPage(' + spot.id + ');" href="#spot-detail' + '">' + '<h3>' + spot.nombre + '</h3>' + '<p>' + parseFloat(spot.distance)
-                    .toFixed(1) + ' kms</p>' + '<img class="spots_list_picture" src="http://www.furgovw.org/tt.php?src=' + encodeURIComponent(spot.imagen) + '&w=80&h=80"></a></li>');
+                    .listview('refresh', true);
+                $('#fvw_user_location_button')
+                    .attr('href', '#spots-list');
+                },
+            error: function() {
+                popErrorMessage('Lo siento, parece que hay un problema con la conexión a furgovw.org');
+                return;
+                }
             });
-
-            $('#spots_list_list')
-                .listview('refresh', true);
-            $('#fvw_user_location_button')
-                .attr('href', '#spots-list');
-        })
-            .error(function() {
-            popErrorMessage('Lo siento, parece que hay un problema con la conexión a furgovw.org');
-            return;
-        });
     };
 
     furgovw.fillDetailPage = function(id) {
@@ -134,6 +174,43 @@ var furgovw = {};
                     .html(spot.body);
             }
         });
+    };
+
+    furgovw.loadMap = function() {
+        if (typeof furgovw.marker == 'undefined') {
+            if (furgovw.userLatitude && furgovw.userLongitude) {
+                var latlng =
+                    new google.maps.LatLng(furgovw.userLatitude, furgovw.userLongitude);
+            } else {
+                var latlng =
+                    new google.maps.LatLng("40.41153868","-3.70362707");
+            }
+
+            var myOptions = {
+                zoom: 5,
+                center: latlng,
+                overviewMapControl: true,
+                zoomControl: true,
+                zoomControlOptions: {
+                    style: google.maps.ZoomControlStyle.SMALL,
+                    position: google.maps.ControlPosition.LEFT_TOP
+                },
+                mapTypeId: google.maps.MapTypeId.ROADMAP
+            };
+            map = new google.maps.Map(document.getElementById("map_container"), myOptions);
+            var mapdiv = document.getElementById("map_container");
+            mapdiv.style.width = '100%';
+            mapdiv.style.height = '100%';
+            mapdiv.style.padding = '0';
+
+            furgovw.marker = new google.maps.Marker({ position: latlng, title:"Centrar aquí" });
+            furgovw.marker.setMap(map);
+
+            google.maps.event.addListener(map, 'click', function(event) {
+                furgovw.marker.setPosition(event.latLng);
+            });
+        }
+
     };
 
     function popErrorMessage(errorMessage) {
